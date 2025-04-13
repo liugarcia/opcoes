@@ -1,0 +1,31 @@
+name: Atualizar Opções
+
+on:
+  schedule:
+    - cron: '0 22 * * 1-5'  # Executa de segunda a sexta às 19h (horário de Brasília)
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Instalar dependências
+        run: pip install pandas
+
+      - name: Executar script
+        run: python gerar_opcoes.py
+
+      - name: Commit e push do arquivo JSON
+        run: |
+          git config --global user.email "bot@github.com"
+          git config --global user.name "GitHub Bot"
+          git add opcoes.json
+          git commit -m "Atualiza opcoes.json automaticamente"
+          git push
